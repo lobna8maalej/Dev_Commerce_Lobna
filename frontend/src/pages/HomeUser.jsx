@@ -1,93 +1,125 @@
-import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
-import { getPrinters } from "../services/printers";
-import { useAuth } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import api from "../services/api";
 import "./HomeUser.css";
 
 const HomeUser = () => {
-  const { user } = useAuth();
-  const [printers, setPrinters] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-  const [search, setSearch] = useState("");
+  const [products, setProducts] = useState([]);
+  const [animatingProduct, setAnimatingProduct] = useState(null);
 
-  const navigate = useNavigate();
-
+  // ================= FETCH PRODUCTS =================
   useEffect(() => {
-    const load = async () => {
+    const fetchProducts = async () => {
       try {
-        const data = await getPrinters();
-        setPrinters(data);
-      } catch (error) {
-        console.log(error);
-        setError("Unable to load printers.");
-      } finally {
-        setLoading(false);
+        const res = await api.get("/printers");
+        setProducts(res.data);
+      } catch (err) {
+        console.log("Error loading printers:", err);
       }
     };
 
-    load();
+    fetchProducts();
   }, []);
 
-  const filteredPrinters = printers.filter((p) =>
-    p.brand.toLowerCase().includes(search.toLowerCase()) ||
-    p.model.toLowerCase().includes(search.toLowerCase())
-  );
+  // ================= ADD TO CART + ANIMATION =================
+  const addToCart = (product, e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+
+    // animation image
+    setAnimatingProduct({
+      image: product.image,
+      x: rect.left,
+      y: rect.top,
+    });
+
+    // get cart
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+    // check if exists
+    const exists = cart.find((p) => p._id === product._id);
+
+    if (exists) {
+      cart = cart.map((p) =>
+        p._id === product._id
+          ? { ...p, quantity: p.quantity + 1 }
+          : p
+      );
+    } else {
+      cart.push({
+        _id: product._id,
+        brand: product.brand,
+        model: product.model,
+        price: product.price,
+        image: product.image,
+        quantity: 1,
+      });
+    }
+
+    // save cart
+    localStorage.setItem("cart", JSON.stringify(cart));
+
+    // remove animation
+    setTimeout(() => {
+      setAnimatingProduct(null);
+    }, 700);
+  };
 
   return (
-    <div className="home-page">
+    <>
+      {/* ================= NAVBAR ================= */}
       <Navbar />
 
-      <div className="home-container">
-        <div className="home-header">
-          <div>
-          </div>
+      {/* ================= PAGE ================= */}
+      <div className="home-user">
+        <h2>🖨️ Available Printers</h2>
 
-          <input
-            className="home-search"
-            type="text"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search printer..."
-          />
-        </div>
+        <div className="grid">
+          {products.map((p) => (
+            <div key={p._id} className="card">
 
-        {loading && <p className="home-message">Loading printers...</p>}
-        {error && <p className="home-message home-error">{error}</p>}
+              {/* IMAGE */}
+              <img
+                src={p.image}
+                alt={p.brand}
+                width="150"
+              />
 
-        <div className="home-grid">
-          {filteredPrinters.map((p) => (
-            <div className="home-card" key={p._id}>
-              <div className="home-image-wrap">
-                <img
-                  src={p.image}
-                  alt={p.brand}
-                  className="home-image"
-                  onError={(e) => {
-                    e.currentTarget.src =
-                      "https://www.zebra.com/content/dam/zebra_dam/global/zcom-web-production/web-production-photography/web005/healthcare-photography-website-patient-id-label-printing-16x9-3600.jpg.imgo.jpg";
-                  }}
-                />
-              </div>
+              {/* INFO */}
+              <h3>{p.brand}</h3>
 
-              <div className="home-card-body">
-                <h4>{p.brand}</h4>
-                <p>{p.model}</p>
-                <p className="home-price">{p.price} TND</p>
+              <p>{p.model}</p>
 
-                <button
-                  className="home-btn"
-                  onClick={() => navigate(`/printers/${p._id}`)}
-                >
-                  View Details
-                </button>
-              </div>
+              <p>
+                <b>{p.price} TND</b>
+              </p>
+
+              <p>Stock: {p.stock}</p>
+
+              {/* BUTTON */}
+              <button
+                onClick={(e) => addToCart(p, e)}
+                className="btn-cart"
+              >
+                🛒 Ajouter au panier
+              </button>
             </div>
           ))}
         </div>
+
+        {/* ================= FLY ANIMATION ================= */}
+        {animatingProduct && (
+          <img
+            src={animatingProduct.image}
+            alt="animation"
+            className="fly-image"
+            style={{
+              top: animatingProduct.y,
+              left: animatingProduct.x,
+            }}
+          />
+        )}
       </div>
-    </div>
+    </>
   );
 };
 

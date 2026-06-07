@@ -1,30 +1,92 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Login from "./pages/Login";
-import Dashboard from "./pages/Dashboard";
-import HomeUser from "./pages/HomeUser";
-import Cartridges from "./pages/cartridge";
-import PrivateRoute from "./home/privateRoutes";
-import Printers from "./pages/printers";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 
-import CartridgeDetails from "./pages/CartridgeDetails";
+// USER PAGES
+import HomeUser from "./pages/HomeUser";
+import Cart from "./pages/Cart";
+import Delivery from "./pages/Delivery";
 import PrinterDetails from "./pages/PrinterDetails";
+
+// AUTH
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+
+// ADMIN
+import AdminDashboard from "./pages/AdminDashboard";
+
+// PROTECTION
+import PrivateRoute from "./pages/PrivateRoute";
 
 function App() {
   return (
-    <BrowserRouter>
+    <Router>
       <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/login" element={<Login />} />
-        <Route element={<PrivateRoute />}>
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/home" element={<HomeUser />} />
-          <Route path="/printers" element={<Printers />} />
-          <Route path="/cartridges" element={<Cartridges />} />
-          <Route path="/cartridges/:id" element={<CartridgeDetails />} />
-          <Route path="/printers/:id" element={<PrinterDetails />} />
-        </Route>
+
+        {/* DEFAULT ROUTE */}
+        <Route
+          path="/"
+          element={<Navigate to="/login" />}
+        />
+
+        {/* AUTH */}
+        <Route
+          path="/login"
+          element={<Login />}
+        />
+
+        <Route
+          path="/register"
+          element={<Register />}
+        />
+
+        {/* USER */}
+        <Route
+          path="/home"
+          element={
+            <PrivateRoute>
+              <HomeUser />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/cart"
+          element={
+            <PrivateRoute>
+              <Cart />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/delivery"
+          element={
+            <PrivateRoute>
+              <Delivery />
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/printers/:id"
+          element={
+            <PrivateRoute>
+              <PrinterDetails />
+            </PrivateRoute>
+          }
+        />
+
+        {/* ADMIN */}
+        <Route
+          path="/admin"
+          element={
+            <PrivateRoute role="admin">
+              <AdminDashboard />
+            </PrivateRoute>
+          }
+        />
+
       </Routes>
-    </BrowserRouter>
+    </Router>
   );
 }
 

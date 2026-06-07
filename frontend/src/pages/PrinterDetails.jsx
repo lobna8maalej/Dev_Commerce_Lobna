@@ -1,57 +1,96 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { getOnePrinter } from "../services/printers";
+import api from "../services/api";
 import "./PrinterDetails.css";
 
 const PrinterDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [printer, setPrinter] = useState(null);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const load = async () => {
+    const fetchPrinter = async () => {
       try {
-        const data = await getOnePrinter(id);
-        setPrinter(data);
-      } catch (error) {
-        console.log(error.message);
-      } finally {
-        setLoading(false);
+        const res = await api.get(`/printers/${id}`);
+        setPrinter(res.data);
+      } catch (err) {
+        console.log(err);
       }
     };
 
-    load();
+    fetchPrinter();
   }, [id]);
 
-  if (loading) return <p className="details-loading">Loading...</p>;
-  if (!printer) return <p className="details-loading">Printer not found</p>;
+  const addToCart = () => {
+    if (!printer) return;
+
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+    const exists = cart.find((p) => p._id === printer._id);
+
+    if (exists) {
+      cart = cart.map((p) =>
+        p._id === printer._id
+          ? { ...p, quantity: p.quantity + 1 }
+          : p
+      );
+    } else {
+      cart.push({
+        _id: printer._id,
+        brand: printer.brand,
+        model: printer.model,
+        price: printer.price,
+        image: printer.image,
+        quantity: 1,
+      });
+    }
+
+    localStorage.setItem("cart", JSON.stringify(cart));
+    alert("Produit ajouté 🛒");
+  };
+
+  if (!printer) return <p>Loading...</p>;
 
   return (
-    <div className="details-page">
-      <div className="details-card">
-        <div className="details-image-wrap">
-          <img
-            src={printer.image}
-            alt={printer.brand}
-            className="details-image"
-          />
-        </div>
+    <div className="printer-page">
 
-        <div className="details-content">
-          <h2>{printer.brand}</h2>
-          <p className="details-subtitle">{printer.model}</p>
+      <div className="printer-card">
 
-          <div className="details-info">
-            <p><span>Price:</span> {printer.price} TND</p>
-            <p><span>Stock:</span> {printer.stock}</p>
-          </div>
+        <img
+          className="printer-image"
+          src={
+            printer.image ||
+            "https://d1csarkz8obe9u.cloudfront.net/posterpreviews/printing-and-branding-services-design-template-bf10795692efd7c6f2087f42acbf89e1_screen.jpg"
+          }
+          alt={printer.brand}
+        />
 
-          <button className="details-btn" onClick={() => navigate(-1)}>
-            Close
+        <div className="printer-content">
+
+          <h2 className="title">{printer.brand}</h2>
+
+          <p className="model">{printer.model}</p>
+
+          <p className="price">{printer.price} TND</p>
+
+          <p className="stock">Stock: {printer.stock}</p>
+
+          <button className="btn btn-cart" onClick={addToCart}>
+            Ajouter au panier 🛒
           </button>
+
+          <button className="btn btn-blue" onClick={() => navigate("/cart")}>
+            Voir le panier
+          </button>
+
+          <button className="btn btn-gray" onClick={() => navigate(-1)}>
+            Retour
+          </button>
+
         </div>
+
       </div>
+
     </div>
   );
 };

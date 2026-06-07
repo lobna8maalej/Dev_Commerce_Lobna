@@ -1,21 +1,26 @@
 const jwt = require("jsonwebtoken");
-require("dotenv").config();
 
-const authorize = (req, res, next) => {
+// ================= AUTH =================
+const auth = (req, res, next) => {
+  const authHeader = req.headers.authorization;
+
+  if (
+    !authHeader ||
+    !authHeader.startsWith("Bearer ")
+  ) {
+    return res.status(401).json({
+      message: "No token provided",
+    });
+  }
+
+  const token = authHeader.split(" ")[1];
+
   try {
-    // get token from header
-    const token = req.headers.authorization?.split(" ")[1];
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_SECRET
+    );
 
-    if (!token) {
-      return res.status(401).json({
-        message: "Token not found",
-      });
-    }
-
-    // verify token
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-    // attach user to request
     req.user = decoded;
 
     next();
@@ -27,4 +32,21 @@ const authorize = (req, res, next) => {
   }
 };
 
-module.exports = authorize;
+// ================= ADMIN =================
+const isAdmin = (req, res, next) => {
+  if (
+    req.user &&
+    req.user.role === "admin"
+  ) {
+    next();
+  } else {
+    return res.status(403).json({
+      message: "Access denied: Admin only",
+    });
+  }
+};
+
+module.exports = {
+  auth,
+  isAdmin,
+};

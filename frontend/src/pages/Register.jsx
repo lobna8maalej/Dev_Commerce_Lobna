@@ -2,46 +2,47 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import AuthNavbar from "../components/AuthNavbar";
-import "./login.css"; // ✅ IMPORTANT (doit exister exactement)
+import "./Auth.css";
 
-const Login = () => {
+const Register = () => {
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  const handleLogin = async (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
 
     try {
       const res = await axios.post(
-        "http://localhost:3000/api/auth/login",
-        { email, password }
+        "http://localhost:3000/api/auth/register",
+        { username, email, password }
       );
 
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("user", JSON.stringify(res.data.user));
 
-      if (res.data.user.role === "admin") {
-        navigate("/admin");
-      } else {
-        navigate("/home");
-      }
+      navigate("/login");
 
     } catch (err) {
-      alert("Login failed ❌");
+      alert("Register failed ❌");
     }
   };
 
   return (
     <div className="auth-page">
-
       <AuthNavbar />
 
       <div className="auth-container">
+        <h2>Register</h2>
 
-        <h2>Login</h2>
+        <form onSubmit={handleRegister}>
+          <input
+            type="text"
+            placeholder="Username"
+            onChange={(e) => setUsername(e.target.value)}
+          />
 
-        <form onSubmit={handleLogin}>
           <input
             type="email"
             placeholder="Email"
@@ -55,17 +56,16 @@ const Login = () => {
           />
 
           <button className="auth-btn">
-            Login
+            Register
           </button>
         </form>
 
         <p className="auth-link">
-          Don't have an account? <Link to="/register">Register</Link>
+          Already have an account? <Link to="/login">Login</Link>
         </p>
-
       </div>
     </div>
   );
 };
 
-export default Login;
+export default Register;

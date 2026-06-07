@@ -1,32 +1,41 @@
-require("dotenv").config();
-
 const express = require("express");
+const mongoose = require("mongoose");
 const cors = require("cors");
 
-const connectDB = require("./config/config");
-
-const authRoutes = require("./Routes/userRoutes");
-const cartridgeRoutes = require("./Routes/cartridgeRoute");
-const printerRoutes = require("./Routes/printRoute");
-
 const app = express();
-connectDB();
 
-
+// ================= MIDDLEWARE =================
 app.use(cors());
 app.use(express.json());
 
+// ================= ROUTES =================
+const orderRoutes = require("./routes/orderRoutes");
+const userRoutes = require("./routes/userRoutes");
+const printerRoutes = require("./routes/printerRoutes");
 
-app.get("/", (req, res) => {
-  res.send("API is running");
-});
-
-
-app.use("/api/auth", authRoutes);
-app.use("/api/cartridge", cartridgeRoutes);
+// API ROUTES
+app.use("/api/orders", orderRoutes);
+app.use("/api/auth", userRoutes);
 app.use("/api/printers", printerRoutes);
 
+// ================= MONGODB =================
+mongoose
+  .connect("mongodb://127.0.0.1:27017/stock_db")
+  .then(() => {
+    console.log("✅ MongoDB connected");
+  })
+  .catch((err) => {
+    console.error("❌ Mongo error:", err);
+  });
 
-app.listen(3000, () => {
-  console.log("Server running on port 3000");
+// ================= TEST ROUTE =================
+app.get("/", (req, res) => {
+  res.send("🚀 Backend is running...");
+});
+
+// ================= SERVER =================
+const PORT = 3000;
+
+app.listen(PORT, () => {
+  console.log(`✅ Server running on port ${PORT}`);
 });

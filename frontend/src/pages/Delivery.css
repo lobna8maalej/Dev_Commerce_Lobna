@@ -1,0 +1,126 @@
+/* PAGE BACKGROUND */
+.delivery-page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background: linear-gradient(135deg, #e0f7fa, #e8f5ff);
+  font-family: "Segoe UI", sans-serif;
+}
+
+/* CARD DELIVERY (TURQUOISE) */
+.delivery-container {
+  width: 450px;
+  padding: 30px;
+
+  /* 🔵 TURQUOISE CARD */
+  background: linear-gradient(135deg, #00acc1, #26c6da);
+  color: white;
+
+  border-radius: 18px;
+
+  box-shadow: 0 15px 35px rgba(0, 172, 193, 0.25);
+
+  text-align: center;
+  animation: fadeUp 0.5s ease-in-out;
+}
+
+/* TITLE */
+.delivery-container h2 {
+  margin-bottom: 20px;
+  font-size: 22px;
+  font-weight: bold;
+}
+
+/* INPUTS */
+.delivery-input {
+  width: 100%;
+  padding: 12px;
+  margin-top: 12px;
+
+  border-radius: 10px;
+  border: none;
+
+  outline: none;
+  background: rgba(255, 255, 255, 0.9);
+  color: #333;
+
+  transition: 0.3s;
+}
+
+/* INPUT FOCUS */
+.delivery-input:focus {
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.6);
+}
+
+/* TEXTAREA */
+.textarea {
+  height: 90px;
+  resize: none;
+}
+
+/* ORDER BOX (white inside turquoise card) */
+.order-box {
+  margin-top: 20px;
+  padding: 15px;
+
+  background: white;
+  color: #333;
+
+  border-radius: 12px;
+}
+
+/* ORDER ITEM */
+.order-item {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+/* TOTAL */
+.total-box {
+  margin-top: 15px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+/* BUTTON */
+.confirm-btn {
+  margin-top: 20px;
+  width: 100%;
+  padding: 12px;
+
+  border: none;
+  border-radius: 12px;
+
+  background: white;
+  color: #00acc1;
+
+  font-weight: bold;
+  cursor: pointer;
+
+  transition: 0.3s;
+}
+
+.confirm-btn:hover {
+  background: #e0f7fa;
+  transform: scale(1.03);
+}
+
+.confirm-btn:disabled {
+  background: #ccc;
+  color: #666;
+  cursor: not-allowed;
+}
+
+/* ANIMATION */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
