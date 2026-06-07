@@ -1,0 +1,52 @@
+.footer {
+  background: linear-gradient(135deg, #1b5e20, #2e7d32);
+  color: white;
+  margin-top: 50px;
+  padding: 40px 20px;
+}
+
+/* container */
+.footer-container {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 30px;
+}
+
+/* sections */
+.footer-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.footer-title {
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.footer-section h3 {
+  margin-bottom: 10px;
+  color: #c8facc;
+}
+
+.footer-section a {
+  color: white;
+  text-decoration: none;
+  transition: 0.3s;
+}
+
+.footer-section a:hover {
+  color: #a5f3b5;
+  transform: translateX(5px);
+}
+
+/* bottom */
+.footer-bottom {
+  text-align: center;
+  margin-top: 30px;
+  padding-top: 15px;
+  border-top: 1px solid rgba(255,255,255,0.2);
+  font-size: 13px;
+  opacity: 0.8;
+}

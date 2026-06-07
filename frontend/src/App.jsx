@@ -16,6 +16,9 @@ import AdminDashboard from "./pages/AdminDashboard";
 // PROTECTION
 import PrivateRoute from "./pages/PrivateRoute";
 
+// FOOTER
+import Footer from "./components/Footer";
+
 function App() {
   return (
     <Router>
@@ -38,40 +41,59 @@ function App() {
           element={<Register />}
         />
 
-        {/* USER */}
+        {/* USER HOME */}
         <Route
           path="/home"
           element={
-            <PrivateRoute>
-              <HomeUser />
-            </PrivateRoute>
+            <>
+              <PrivateRoute>
+                <HomeUser />
+              </PrivateRoute>
+
+              <Footer />
+            </>
           }
         />
 
+        {/* CART */}
         <Route
           path="/cart"
           element={
-            <PrivateRoute>
-              <Cart />
-            </PrivateRoute>
+            <>
+              <PrivateRoute>
+                <Cart />
+              </PrivateRoute>
+
+              <Footer />
+            </>
           }
         />
 
+        {/* DELIVERY */}
         <Route
           path="/delivery"
           element={
-            <PrivateRoute>
-              <Delivery />
-            </PrivateRoute>
+            <>
+              <PrivateRoute>
+                <Delivery />
+              </PrivateRoute>
+
+              <Footer />
+            </>
           }
         />
 
+        {/* PRINTER DETAILS */}
         <Route
           path="/printers/:id"
           element={
-            <PrivateRoute>
-              <PrinterDetails />
-            </PrivateRoute>
+            <>
+              <PrivateRoute>
+                <PrinterDetails />
+              </PrivateRoute>
+
+              <Footer />
+            </>
           }
         />
 
