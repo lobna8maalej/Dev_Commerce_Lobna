@@ -21,11 +21,12 @@ const Navbar = () => {
   }, []);
 
   // ================= LOGOUT =================
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    navigate("/login");
-  };
+ const handleLogout = () => {
+  localStorage.removeItem("token");
+  localStorage.removeItem("user");
+
+  navigate("/auth"); 
+};
 
   return (
     <nav
@@ -48,7 +49,7 @@ const Navbar = () => {
           alignItems: "center",
         }}
       >
-        {/* CART */}
+        
         <Link
           to="/cart"
           style={{
@@ -57,7 +58,7 @@ const Navbar = () => {
             position: "relative",
           }}
         >
-          🛒 Cart
+           Cart
 
           {cartCount > 0 && (
             <span
@@ -76,14 +77,6 @@ const Navbar = () => {
               {cartCount}
             </span>
           )}
-        </Link>
-
-        {/* DELIVERY */}
-        <Link
-          to="/delivery"
-          style={{ color: "white", textDecoration: "none" }}
-        >
-          🚚 Delivery
         </Link>
 
         {/* LOGOUT */}

@@ -1,100 +1,61 @@
 const Order = require("../models/Order");
-const Printer = require("../models/Printer");
-const mongoose = require("mongoose");
 
 // CREATE
 const createOrder = async (req, res) => {
   try {
-    const { items, totalPrice, address } = req.body;
-
-    const order = new Order({
-      userId: req.user.id,
-      items,
-      totalPrice,
-      address,
-      status: "pending"
-    });
-
-    await order.save();
+    const order = await Order.create({
+   user: req.user.id, 
+   items: req.body.items,
+   totalPrice: req.body.totalPrice,
+   address: req.body.address,
+  });
 
     res.status(201).json(order);
   } catch (error) {
+    console.log("ORDER ERROR:", error);
     res.status(500).json({ message: error.message });
   }
 };
 
-// Lire toutes les commandes
+// GET USER ORDERS
+const getUserOrders = async (req, res) => {
+  const orders = await Order.find({ userId: req.user.id });
+  res.json(orders);
+};
+
+// GET ALL (ADMIN)
 const getOrders = async (req, res) => {
-  try {
-    let orders;
-    if (req.user.role === "admin") {
-      orders = await Order.find();
-    } else {
-      orders = await Order.find({ userId: req.user.id });
-    }
-    res.status(200).json(orders);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
+  const orders = await Order.find();
+  res.json(orders);
 };
-// READ BY ID
-const getOrderById = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const order = await Order.findById(id).populate("user", "email name");
 
-    if (!order) {
-      return res.status(404).json({ message: "Commande introuvable" });
-    }
-
-    res.status(200).json(order);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
+// GET ONE
+const getOneOrder = async (req, res) => {
+  const order = await Order.findById(req.params.id);
+  res.json(order);
 };
 
 // UPDATE
 const updateOrder = async (req, res) => {
-  try {
-    const orderData = await Order.findById(req.params.id);
-
-    if (!orderData) {
-      return res.status(404).json({ message: "Commande introuvable" });
-    }
-
-    orderData.status = req.body.status || orderData.status;
-    orderData.deliveryInfo = req.body.deliveryInfo || orderData.deliveryInfo;
-
-    await orderData.save();
-
-    res.status(200).json({
-      message: "Commande mise à jour avec succès",
-      order: orderData,
-    });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
+  const order = await Order.findByIdAndUpdate(
+    req.params.id,
+    req.body,
+    { new: true }
+  );
+  res.json(order);
 };
 
 // DELETE
 const deleteOrder = async (req, res) => {
-  try {
-    const deleted = await Order.findByIdAndDelete(req.params.id);
-
-    if (!deleted) {
-      return res.status(404).json({ message: "Commande introuvable" });
-    }
-
-    res.status(200).json({ message: "Commande supprimée" });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
+  await Order.findByIdAndDelete(req.params.id);
+  res.json({ message: "Deleted" });
 };
 
 module.exports = {
   createOrder,
+  getUserOrders,
   getOrders,
-  getOrderById,
+  getOneOrder,
   updateOrder,
   deleteOrder,
 };

@@ -1,26 +1,25 @@
 const express = require("express");
 const router = express.Router();
 
-const { auth, isAdmin } = require("../middleware/auth");
-
 const {
   createOrder,
+  getUserOrders,
   getOrders,
-  getOrderById,
+  getOneOrder,
   updateOrder,
-  deleteOrder,
+  deleteOrder
 } = require("../controllers/orderController");
+
+const { auth } = require("../middleware/auth");
 
 // USER
 router.post("/", auth, createOrder);
-router.get("/my", auth, getOrders); // user orders only
+router.get("/my-orders", auth, getUserOrders);
 
 // ADMIN
-router.get("/", auth, isAdmin, getOrders);
-router.get("/:id", auth, isAdmin, getOrderById);
-router.put("/:id", auth, isAdmin, updateOrder);
-router.delete("/:id", auth, isAdmin, deleteOrder);
+router.get("/", auth, getOrders);
+router.get("/:id", auth, getOneOrder);
+router.put("/:id", auth, updateOrder);
+router.delete("/:id", auth, deleteOrder);
 
 module.exports = router;
-
-

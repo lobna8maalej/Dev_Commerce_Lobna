@@ -1,58 +1,25 @@
-import axios from "axios";
+import api from "./api";
 
-const API = "http://localhost:3000/api/orders";
-
-// ================= CREATE ORDER =================
+// CREATE ORDER
 export const createOrder = async (data) => {
-  try {
-    const res = await axios.post(API, data);
-    return res.data;
-  } catch (error) {
-    console.error("Error creating order:", error);
-    throw error;
-  }
+  const res = await api.post("/orders", data);
+  return res.data;
 };
 
-// ================= GET ALL ORDERS =================
-export const getOrders = async () => {
-  try {
-    const res = await axios.get(API);
-    return res.data;
-  } catch (error) {
-    console.error("Error fetching orders:", error);
-    throw error;
-  }
+// GET USER ORDERS
+export const getMyOrders = async () => {
+  const res = await api.get("/orders/my-orders");
+  return res.data;
 };
 
-// ================= GET ONE ORDER =================
-export const getOneOrder = async (id) => {
-  try {
-    const res = await axios.get(`${API}/${id}`);
-    return res.data;
-  } catch (error) {
-    console.error("Error getting order:", error);
-    throw error;
-  }
+// UPDATE ORDER (admin)
+export const updateOrder = async (id, status) => {
+  const res = await api.put(`/orders/${id}`, { status });
+  return res.data;
 };
 
-// ================= UPDATE ORDER =================
-export const updateOrder = async (id, data) => {
-  try {
-    const res = await axios.put(`${API}/${id}`, data);
-    return res.data;
-  } catch (error) {
-    console.error("Error updating order:", error);
-    throw error;
-  }
-};
-
-// ================= DELETE ORDER =================
+// DELETE ORDER (admin)
 export const deleteOrder = async (id) => {
-  try {
-    const res = await axios.delete(`${API}/${id}`);
-    return res.data;
-  } catch (error) {
-    console.error("Error deleting order:", error);
-    throw error;
-  }
+  const res = await api.delete(`/orders/${id}`);
+  return res.data;
 };

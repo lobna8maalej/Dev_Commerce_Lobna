@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import api from "../services/api";
+import { createOrder } from "../services/order";
 import "./Delivery.css";
 
-const Delivery = () => {
+export default function Delivery() {
+
   const [cart, setCart] = useState([]);
 
   const [firstName, setFirstName] = useState("");
@@ -20,118 +21,90 @@ const Delivery = () => {
     0
   );
 
-  const createOrder = async () => {
-    try {
-      const token = localStorage.getItem("token");
+  const placeOrder = async () => {
 
+    if (cart.length === 0) {
+      alert("Cart is empty");
+      return;
+    }
+
+    try {
+
+      // ✔ ORDER ITEMS
       const orderItems = cart.map((item) => ({
-        productId: item._id,
-        brand: item.brand,
-        price: item.price,
+        printer: item._id,
+        priceAtPurchase: item.price,
         quantity: item.quantity,
       }));
 
-      await api.post(
-        "/orders",
-        {
-          items: orderItems,
-          totalPrice: total,
+      // ✔ ORDER OBJECT (MISSING IN YOUR CODE)
+      const order = {
+        items: orderItems,
+        totalPrice: total,
+        address,
+        customer: {
           firstName,
           lastName,
           phone,
-          address,
         },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+        date: new Date(),
+      };
+
+      console.log("ORDER SENT:", order);
+
+      const res = await createOrder(order);
+
+      console.log("ORDER SUCCESS:", res);
 
       localStorage.removeItem("cart");
       setCart([]);
 
-      alert("✅ Order placed successfully!");
+      alert("Order placed successfully");
+
     } catch (err) {
-      console.log("Order error:", err);
-      alert("❌ Error while placing order");
+      console.log("ORDER ERROR:", err.response?.data || err.message);
+      alert("Order failed");
     }
   };
 
   return (
     <div className="delivery-page">
+
       <div className="delivery-container">
 
-        <h2>🚚 Delivery Information</h2>
+        <h1>Delivery</h1>
 
-        {/* INPUTS */}
         <input
-          className="delivery-input"
-          type="text"
-          placeholder="First Name"
-          value={firstName}
+          placeholder="First name"
           onChange={(e) => setFirstName(e.target.value)}
         />
 
         <input
-          className="delivery-input"
-          type="text"
-          placeholder="Last Name"
-          value={lastName}
+          placeholder="Last name"
           onChange={(e) => setLastName(e.target.value)}
         />
 
         <input
-          className="delivery-input"
-          type="text"
-          placeholder="Phone Number"
-          value={phone}
+          placeholder="Phone"
           onChange={(e) => setPhone(e.target.value)}
         />
 
         <textarea
-          className="delivery-input textarea"
-          placeholder="Full Address"
-          value={address}
+          placeholder="Address"
           onChange={(e) => setAddress(e.target.value)}
         />
 
-        {/* ORDER SUMMARY */}
-        <div className="order-box">
-          <h3>🛒 Order Summary</h3>
+        <h2>Total: {total} TND</h2>
 
-          {cart.map((item) => (
-            <div key={item._id} className="order-item">
-              <strong>{item.brand}</strong>
-              <p>Quantity: {item.quantity}</p>
-              <p>{item.price * item.quantity} TND</p>
-            </div>
-          ))}
-        </div>
-
-        {/* TOTAL */}
-        <h3 className="total-box">
-          💰 Total: {total} TND
-        </h3>
-
-        {/* BUTTON */}
         <button
-          className="confirm-btn"
-          onClick={createOrder}
-          disabled={
-            !firstName ||
-            !lastName ||
-            !phone ||
-            !address ||
-            cart.length === 0
-          }
+          onClick={placeOrder}
+          disabled={!address || cart.length === 0}
         >
-          ✅ Confirm Order
+          Confirm Order
         </button>
 
       </div>
+
     </div>
   );
-};
-
-export default Delivery;
+}

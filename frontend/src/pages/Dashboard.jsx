@@ -13,7 +13,7 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("user"));
 
-  // ================= FETCH =================
+
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -29,7 +29,6 @@ const Dashboard = () => {
     fetchProducts();
   }, []);
 
-  // ================= CART =================
   const addToCart = (product) => {
     setCart((prev) => {
       const exists = prev.find((p) => p._id === product._id);
@@ -45,14 +44,10 @@ const Dashboard = () => {
       return [...prev, { ...product, quantity: 1 }];
     });
   };
-
-  // ================= ORDER =================
   const goToOrder = () => {
     localStorage.setItem("cart", JSON.stringify(cart));
     navigate("/delivery");
   };
-
-  // ================= ADMIN DELETE =================
   const deleteProduct = async (id) => {
     await api.delete(`/printers/${id}`, {
       headers: {
@@ -88,7 +83,6 @@ const Dashboard = () => {
               <p>{p.price} TND</p>
               <p>Stock: {p.stock}</p>
 
-              {/* USER ACTION */}
               <button onClick={() => addToCart(p)}>
                 Add to cart
               </button>

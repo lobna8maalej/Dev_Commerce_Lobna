@@ -1,123 +1,132 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: "Segoe UI", sans-serif;
+/* FULL PAGE */
+.auth-wrapper {
+  height: 100vh;
+  display: flex;
+  font-family: "Poppins", sans-serif;
+  overflow: hidden;
 }
 
-/* ===== FULL BACKGROUND JAUNE ŒUF ===== */
-.auth-page {
-  min-height: 100vh;
+/* LEFT SIDE */
+.auth-left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  transition: 0.6s;
+}
 
+.auth-wrapper.login .auth-left {
+  background: linear-gradient(135deg, #0f172a, #10b981);
+}
+
+.auth-wrapper.register .auth-left {
+  background: linear-gradient(135deg, #0f172a, #38bdf8);
+}
+
+.auth-left h1 {
+  font-size: 40px;
+  transform: translateZ(30px);
+}
+
+.auth-left p {
+  opacity: 0.8;
+}
+
+.auth-left button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  background: white;
+  color: black;
+  transition: 0.3s;
+}
+
+.auth-left button:hover {
+  transform: scale(1.05);
+}
+
+/* RIGHT SIDE */
+.auth-right {
+  flex: 1;
   display: flex;
   justify-content: center;
   align-items: center;
-
-  background: #ffe97a; /* jaune œuf pur */
+  background: #0b0f1a;
 }
 
-/* ===== NAVBAR ===== */
-.auth-navbar {
-  width: 100%;
-  padding: 16px;
-
-  text-align: center;
-  font-size: 20px;
-  font-weight: bold;
-
-  background: #ffdd55;
-
-  position: fixed;
-  top: 0;
-  left: 0;
-
-  color: #3a2f00;
-}
-
-/* ===== CARD (SANS BLANC FROID) ===== */
-.auth-container {
-  width: 380px;
+/* GLASS CARD */
+.glass-card {
+  width: 350px;
   padding: 30px;
+  border-radius: 20px;
 
-  background: #ffd84d; /* jaune plus chaud */
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(20px);
 
-  border-radius: 18px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.5);
 
-  box-shadow: 0 15px 40px rgba(0,0,0,0.2);
-
-  border: none; /* ❌ aucun bord blanc */
+  transform: perspective(1000px) rotateY(0deg);
+  transition: 0.5s;
 }
 
-/* ===== TITLE ===== */
-.auth-container h2 {
+/* 3D EFFECT */
+.glass-card:hover {
+  transform: perspective(1000px) rotateY(8deg) scale(1.02);
+}
+
+/* TITLE */
+.glass-card h2 {
+  color: white;
   text-align: center;
   margin-bottom: 20px;
-
-  color: #3a2f00;
-  font-size: 26px;
-  font-weight: bold;
 }
 
-/* ===== INPUTS ===== */
-.auth-container input {
+/* INPUTS */
+.glass-card input {
   width: 100%;
   padding: 12px;
-  margin-bottom: 12px;
-
-  border-radius: 10px;
-  border: none; /* ❌ pas de blanc */
-
-  background: #ffef99;
-
-  outline: none;
-
-  color: #3a2f00;
-}
-
-.auth-container input::placeholder {
-  color: #6b5a00;
-}
-
-.auth-container input:focus {
-  transform: scale(1.02);
-  box-shadow: 0 0 10px rgba(0,0,0,0.2);
-}
-
-/* ===== BUTTON ===== */
-.auth-btn {
-  width: 100%;
-  padding: 12px;
-
-  background: #3a2f00;
-  color: #ffe97a;
-
+  margin: 8px 0;
   border: none;
   border-radius: 10px;
 
-  font-weight: bold;
+  background: rgba(255,255,255,0.1);
+  color: white;
+  outline: none;
+  transition: 0.3s;
+}
+
+.glass-card input:focus {
+  transform: scale(1.03);
+  background: rgba(255,255,255,0.2);
+}
+
+/* BUTTON */
+.glass-card button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 15px;
+  border: none;
+  border-radius: 10px;
   cursor: pointer;
+
+  background: linear-gradient(90deg, #10b981, #38bdf8);
+  color: white;
+  font-weight: bold;
 
   transition: 0.3s;
 }
 
-.auth-btn:hover {
-  transform: scale(1.03);
-  background: #2a2200;
+.glass-card button:hover {
+  transform: scale(1.05);
 }
 
-/* ===== LINK ===== */
-.auth-link {
-  text-align: center;
-  margin-top: 15px;
-  color: #3a2f00;
-}
-
-.auth-link a {
-  color: #2a2200;
-  font-weight: bold;
-  text-decoration: none;
-}
-
-.auth-link a:hover {
-  text-decoration: underline;
-}
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .auth-wrapper {
+    flex-direction: column;
+  }
+}/* PAGE BACKGROUND (LOGIN = VERT PISTACHE) */

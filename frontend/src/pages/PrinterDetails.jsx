@@ -46,7 +46,7 @@ const PrinterDetails = () => {
     }
 
     localStorage.setItem("cart", JSON.stringify(cart));
-    alert("Produit ajouté 🛒");
+    alert("Produit ajouté ");
   };
 
   if (!printer) return <p>Loading...</p>;
@@ -76,7 +76,7 @@ const PrinterDetails = () => {
           <p className="stock">Stock: {printer.stock}</p>
 
           <button className="btn btn-cart" onClick={addToCart}>
-            Ajouter au panier 🛒
+            Ajouter au panier 
           </button>
 
           <button className="btn btn-blue" onClick={() => navigate("/cart")}>

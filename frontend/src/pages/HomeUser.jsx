@@ -4,7 +4,10 @@ import api from "../services/api";
 import "./HomeUser.css";
 
 const HomeUser = () => {
+
   const [products, setProducts] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [search, setSearch] = useState("");
   const [animatingProduct, setAnimatingProduct] = useState(null);
 
   // ================= FETCH PRODUCTS =================
@@ -13,6 +16,7 @@ const HomeUser = () => {
       try {
         const res = await api.get("/printers");
         setProducts(res.data);
+        setFilteredProducts(res.data);
       } catch (err) {
         console.log("Error loading printers:", err);
       }
@@ -21,44 +25,49 @@ const HomeUser = () => {
     fetchProducts();
   }, []);
 
-  // ================= ADD TO CART + ANIMATION =================
+  // ================= FILTER =================
+  useEffect(() => {
+
+    const filtered = products.filter((p) =>
+      p.brand.toLowerCase().includes(search.toLowerCase()) ||
+      p.model.toLowerCase().includes(search.toLowerCase())
+    );
+
+    setFilteredProducts(filtered);
+
+  }, [search, products]);
+
   const addToCart = (product, e) => {
+
     const rect = e.currentTarget.getBoundingClientRect();
 
-    // animation image
     setAnimatingProduct({
       image: product.image,
       x: rect.left,
       y: rect.top,
     });
 
-    // get cart
     let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-    // check if exists
     const exists = cart.find((p) => p._id === product._id);
 
     if (exists) {
-      cart = cart.map((p) =>
-        p._id === product._id
-          ? { ...p, quantity: p.quantity + 1 }
-          : p
-      );
-    } else {
-      cart.push({
-        _id: product._id,
-        brand: product.brand,
-        model: product.model,
-        price: product.price,
-        image: product.image,
-        quantity: 1,
-      });
+      alert("Already in cart");
+      return;
     }
 
-    // save cart
+    // ✔ AJOUT UNE SEULE FOIS
+    cart.push({
+      _id: product._id,
+      brand: product.brand,
+      model: product.model,
+      price: product.price,
+      image: product.image,
+      quantity: 1,
+    });
+
     localStorage.setItem("cart", JSON.stringify(cart));
 
-    // remove animation
     setTimeout(() => {
       setAnimatingProduct(null);
     }, 700);
@@ -66,51 +75,50 @@ const HomeUser = () => {
 
   return (
     <>
-      {/* ================= NAVBAR ================= */}
       <Navbar />
 
-      {/* ================= PAGE ================= */}
       <div className="home-user">
-        <h2>🖨️ Available Printers</h2>
 
+        <h2>Available Printers</h2>
+
+        {/* SEARCH BAR */}
+        <input
+          type="text"
+          placeholder="Search printer (brand or model)..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="search-input"
+        />
+
+        {/* PRODUCTS */}
         <div className="grid">
-          {products.map((p) => (
+
+          {filteredProducts.map((p) => (
             <div key={p._id} className="card">
 
-              {/* IMAGE */}
-              <img
-                src={p.image}
-                alt={p.brand}
-                width="150"
-              />
+              <img src={p.image} alt={p.brand} width="150" />
 
-              {/* INFO */}
               <h3>{p.brand}</h3>
-
               <p>{p.model}</p>
-
-              <p>
-                <b>{p.price} TND</b>
-              </p>
-
+              <p><b>{p.price} TND</b></p>
               <p>Stock: {p.stock}</p>
 
-              {/* BUTTON */}
               <button
                 onClick={(e) => addToCart(p, e)}
                 className="btn-cart"
               >
-                🛒 Ajouter au panier
+                Ajouter au panier
               </button>
+
             </div>
           ))}
+
         </div>
 
-        {/* ================= FLY ANIMATION ================= */}
+        {/* ANIMATION */}
         {animatingProduct && (
           <img
             src={animatingProduct.image}
-            alt="animation"
             className="fly-image"
             style={{
               top: animatingProduct.y,
@@ -118,6 +126,7 @@ const HomeUser = () => {
             }}
           />
         )}
+
       </div>
     </>
   );

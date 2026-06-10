@@ -11,14 +11,10 @@ const Cart = () => {
     const stored = JSON.parse(localStorage.getItem("cart")) || [];
     setCart(stored);
   }, []);
-
-  // UPDATE CART
   const updateCart = (updated) => {
     setCart(updated);
     localStorage.setItem("cart", JSON.stringify(updated));
   };
-
-  // INCREASE QTY
   const increaseQty = (id) => {
     const updated = cart.map((item) =>
       item._id === id
@@ -27,8 +23,6 @@ const Cart = () => {
     );
     updateCart(updated);
   };
-
-  // DECREASE QTY
   const decreaseQty = (id) => {
     const updated = cart
       .map((item) =>
@@ -59,7 +53,7 @@ const Cart = () => {
       <div className="cart-container">
 
         {/* TITLE */}
-        <h2 className="cart-title">🛒 My Cart</h2>
+        <h2 className="cart-title"> My Cart</h2>
 
         {/* EMPTY */}
         {cart.length === 0 ? (

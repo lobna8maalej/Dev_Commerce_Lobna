@@ -4,38 +4,31 @@ import api from "../services/api";
 const AdminOrders = () => {
   const [orders, setOrders] = useState([]);
 
-  const token = localStorage.getItem("token");
-
   useEffect(() => {
     const fetchOrders = async () => {
-      const res = await api.get("/orders", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      setOrders(res.data);
+      try {
+        const res = await api.get("/orders");
+        setOrders(res.data);
+      } catch (err) {
+        console.log("ERROR:", err.response?.data || err.message);
+      }
     };
 
     fetchOrders();
   }, []);
 
   const updateStatus = async (id, status) => {
-    const res = await api.put(
-      `/orders/${id}`,
-      { status },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    try {
+      const res = await api.put(`/orders/${id}`, { status });
 
-    setOrders(
-      orders.map((o) =>
-        o._id === id ? res.data : o
-      )
-    );
+      setOrders((prev) =>
+        prev.map((o) =>
+          o._id === id ? res.data : o
+        )
+      );
+    } catch (err) {
+      console.log("UPDATE ERROR:", err.response?.data || err.message);
+    }
   };
 
   return (
@@ -43,7 +36,10 @@ const AdminOrders = () => {
       <h2>Admin Orders</h2>
 
       {orders.map((o) => (
-        <div key={o._id} style={{ border: "1px solid gray", margin: 10 }}>
+        <div
+          key={o._id}
+          style={{ border: "1px solid gray", margin: 10 }}
+        >
           <p>Client: {o.user?.email}</p>
           <p>Total: {o.totalPrice} TND</p>
           <p>Status: {o.status}</p>
@@ -51,6 +47,7 @@ const AdminOrders = () => {
           <button onClick={() => updateStatus(o._id, "processing")}>
             Processing
           </button>
+
           <button onClick={() => updateStatus(o._id, "delivered")}>
             Delivered
           </button>

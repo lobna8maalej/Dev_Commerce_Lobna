@@ -7,8 +7,7 @@ import Delivery from "./pages/Delivery";
 import PrinterDetails from "./pages/PrinterDetails";
 
 // AUTH
-import Login from "./pages/Login";
-import Register from "./pages/Register";
+import Auth from "./pages/Auth";
 
 // ADMIN
 import AdminDashboard from "./pages/AdminDashboard";
@@ -24,34 +23,22 @@ function App() {
     <Router>
       <Routes>
 
-        {/* DEFAULT ROUTE */}
-        <Route
-          path="/"
-          element={<Navigate to="/login" />}
-        />
+        {/* REDIRECTION PAR DÉFAUT */}
+        <Route path="/" element={<Navigate to="/auth" />} />
 
         {/* AUTH */}
-        <Route
-          path="/login"
-          element={<Login />}
-        />
-
-        <Route
-          path="/register"
-          element={<Register />}
-        />
+        <Route path="/auth" element={<Auth />} />
 
         {/* USER HOME */}
         <Route
           path="/home"
           element={
-            <>
-              <PrivateRoute>
+            <PrivateRoute>
+              <>
                 <HomeUser />
-              </PrivateRoute>
-
-              <Footer />
-            </>
+                <Footer />
+              </>
+            </PrivateRoute>
           }
         />
 
@@ -59,13 +46,12 @@ function App() {
         <Route
           path="/cart"
           element={
-            <>
-              <PrivateRoute>
+            <PrivateRoute>
+              <>
                 <Cart />
-              </PrivateRoute>
-
-              <Footer />
-            </>
+                <Footer />
+              </>
+            </PrivateRoute>
           }
         />
 
@@ -73,13 +59,12 @@ function App() {
         <Route
           path="/delivery"
           element={
-            <>
-              <PrivateRoute>
+            <PrivateRoute>
+              <>
                 <Delivery />
-              </PrivateRoute>
-
-              <Footer />
-            </>
+                <Footer />
+              </>
+            </PrivateRoute>
           }
         />
 
@@ -87,13 +72,12 @@ function App() {
         <Route
           path="/printers/:id"
           element={
-            <>
-              <PrivateRoute>
+            <PrivateRoute>
+              <>
                 <PrinterDetails />
-              </PrivateRoute>
-
-              <Footer />
-            </>
+                <Footer />
+              </>
+            </PrivateRoute>
           }
         />
 
