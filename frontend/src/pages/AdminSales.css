@@ -1,0 +1,262 @@
+/* ==========================================
+   ADMIN SALES
+========================================== */
+
+.admin-page {
+  min-height: 100vh;
+  padding: 35px;
+  background: #f5f7fb;
+  font-family: Arial, Helvetica, sans-serif;
+  box-sizing: border-box;
+}
+
+/* ==========================================
+   HEADER
+========================================== */
+
+.page-header {
+  margin-bottom: 30px;
+}
+
+.page-header h1 {
+  margin: 0 0 8px;
+  font-size: 30px;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.page-header p {
+  margin: 0;
+  color: #6b7280;
+  font-size: 15px;
+}
+
+/* ==========================================
+   STATISTICS CARDS
+========================================== */
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 22px;
+  margin-bottom: 35px;
+}
+
+.card {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 25px;
+  min-height: 130px;
+  box-sizing: border-box;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
+  border-left: 5px solid transparent;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.1);
+}
+
+.card h3 {
+  margin: 0 0 15px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #4b5563;
+}
+
+.card p {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 700;
+  color: #111827;
+}
+
+/* ==========================================
+   CARD COLORS
+========================================== */
+
+.card.blue {
+  border-left-color: #2563eb;
+}
+
+.card.green {
+  border-left-color: #16a34a;
+}
+
+.card.orange {
+  border-left-color: #f59e0b;
+}
+
+/* ==========================================
+   SALES SECTION
+========================================== */
+
+.dashboard-section {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 28px;
+  margin-top: 25px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+}
+
+.dashboard-section h2 {
+  margin: 0 0 25px;
+  font-size: 22px;
+  color: #1f2937;
+}
+
+/* ==========================================
+   BEST SELLING PRODUCTS
+========================================== */
+
+.products-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.product-stat {
+  display: grid;
+  grid-template-columns: 60px 1fr 150px 180px;
+  align-items: center;
+  gap: 15px;
+
+  padding: 18px 20px;
+
+  background: #f8fafc;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.product-stat:hover {
+  background: #f1f5f9;
+  transform: translateX(3px);
+}
+
+.product-stat span {
+  font-size: 14px;
+  color: #4b5563;
+}
+
+.product-stat span:first-child {
+  font-size: 18px;
+  font-weight: 700;
+  color: #2563eb;
+}
+
+.product-stat span:nth-child(2) {
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.product-stat span:nth-child(3) {
+  font-weight: 500;
+}
+
+.product-stat span:nth-child(4) {
+  font-weight: 600;
+  text-align: right;
+  color: #16a34a;
+}
+
+/* ==========================================
+   EMPTY SALES
+========================================== */
+
+.empty-sales {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  min-height: 150px;
+
+  background: #f8fafc;
+  border: 1px dashed #d1d5db;
+  border-radius: 12px;
+}
+
+.empty-sales p {
+  margin: 0;
+  color: #6b7280;
+  font-size: 16px;
+}
+
+/* ==========================================
+   LOADING
+========================================== */
+
+.admin-page > h2 {
+  color: #374151;
+}
+
+/* ==========================================
+   RESPONSIVE TABLET
+========================================== */
+
+@media (max-width: 900px) {
+  .admin-page {
+    padding: 25px;
+  }
+
+  .cards {
+    grid-template-columns: 1fr;
+  }
+
+  .product-stat {
+    grid-template-columns: 50px 1fr;
+  }
+
+  .product-stat span:nth-child(3),
+  .product-stat span:nth-child(4) {
+    grid-column: 2;
+    text-align: left;
+  }
+}
+
+/* ==========================================
+   RESPONSIVE MOBILE
+========================================== */
+
+@media (max-width: 600px) {
+  .admin-page {
+    padding: 18px;
+  }
+
+  .page-header h1 {
+    font-size: 24px;
+  }
+
+  .page-header p {
+    font-size: 14px;
+  }
+
+  .dashboard-section {
+    padding: 20px;
+  }
+
+  .dashboard-section h2 {
+    font-size: 19px;
+  }
+
+  .card {
+    padding: 20px;
+  }
+
+  .card p {
+    font-size: 24px;
+  }
+
+  .product-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .product-stat span:nth-child(4) {
+    text-align: left;
+  }
+}

@@ -1,134 +1,294 @@
-import Navbar from "../components/Navbar";
+
 import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import api from "../services/api";
 import "./HomeUser.css";
 
 const HomeUser = () => {
+  const [printers, setPrinters] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const [products, setProducts] = useState([]);
-  const [filteredProducts, setFilteredProducts] = useState([]);
-  const [search, setSearch] = useState("");
-  const [animatingProduct, setAnimatingProduct] = useState(null);
+  const navigate = useNavigate();
 
-  // ================= FETCH PRODUCTS =================
+  // =========================
+  // LOGOUT
+  // =========================
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+
+    navigate("/auth");
+  };
+
+  // =========================
+  // RÉCUPÉRER LES IMPRIMANTES
+  // =========================
+
   useEffect(() => {
-    const fetchProducts = async () => {
+    const fetchPrinters = async () => {
       try {
-        const res = await api.get("/printers");
-        setProducts(res.data);
-        setFilteredProducts(res.data);
+        setLoading(true);
+
+        console.log("🔄 Chargement des imprimantes...");
+        console.log("🌐 API :", api.defaults.baseURL);
+
+        const response = await api.get("/printers");
+
+        console.log("✅ STATUS :", response.status);
+        console.log("✅ PRINTERS :", response.data);
+
+        let products = [];
+
+        if (Array.isArray(response.data)) {
+          products = response.data;
+        } else if (Array.isArray(response.data?.printers)) {
+          products = response.data.printers;
+        } else if (Array.isArray(response.data?.data)) {
+          products = response.data.data;
+        }
+
+        console.log("🖨️ PRODUITS :", products);
+
+        setPrinters(products);
+
       } catch (err) {
-        console.log("Error loading printers:", err);
+        console.error(
+          "❌ ERROR LOADING PRINTERS:",
+          err.response?.data || err.message
+        );
+
+        // En cas d'erreur, on affiche simplement une liste vide
+        setPrinters([]);
+
+      } finally {
+        setLoading(false);
       }
     };
 
-    fetchProducts();
+    fetchPrinters();
   }, []);
 
-  // ================= FILTER =================
-  useEffect(() => {
+  // =========================
+  // LOADING
+  // =========================
 
-    const filtered = products.filter((p) =>
-      p.brand.toLowerCase().includes(search.toLowerCase()) ||
-      p.model.toLowerCase().includes(search.toLowerCase())
-    );
-
-    setFilteredProducts(filtered);
-
-  }, [search, products]);
-
-  const addToCart = (product, e) => {
-
-    const rect = e.currentTarget.getBoundingClientRect();
-
-    setAnimatingProduct({
-      image: product.image,
-      x: rect.left,
-      y: rect.top,
-    });
-
-    let cart = JSON.parse(localStorage.getItem("cart")) || [];
-
-    const exists = cart.find((p) => p._id === product._id);
-
-    if (exists) {
-      alert("Already in cart");
-      return;
-    }
-
-    // ✔ AJOUT UNE SEULE FOIS
-    cart.push({
-      _id: product._id,
-      brand: product.brand,
-      model: product.model,
-      price: product.price,
-      image: product.image,
-      quantity: 1,
-    });
-
-    localStorage.setItem("cart", JSON.stringify(cart));
-
-    setTimeout(() => {
-      setAnimatingProduct(null);
-    }, 700);
-  };
-
-  return (
-    <>
-      <Navbar />
-
+  if (loading) {
+    return (
       <div className="home-user">
 
-        <h2>Available Printers</h2>
+        <header className="user-header">
 
-        {/* SEARCH BAR */}
-        <input
-          type="text"
-          placeholder="Search printer (brand or model)..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="search-input"
-        />
+          <div className="store-logo">
+            Printer Store
+          </div>
 
-        {/* PRODUCTS */}
-        <div className="grid">
+          <button
+            className="logout-button"
+            onClick={handleLogout}
+          >
+            🚪 Déconnexion
+          </button>
 
-          {filteredProducts.map((p) => (
-            <div key={p._id} className="card">
+        </header>
 
-              <img src={p.image} alt={p.brand} width="150" />
+        <section className="products-section">
 
-              <h3>{p.brand}</h3>
-              <p>{p.model}</p>
-              <p><b>{p.price} TND</b></p>
-              <p>Stock: {p.stock}</p>
+          <div className="loading-container">
 
-              <button
-                onClick={(e) => addToCart(p, e)}
-                className="btn-cart"
-              >
-                Ajouter au panier
-              </button>
+            <div className="loader"></div>
 
-            </div>
-          ))}
+            <p>
+              Chargement des imprimantes...
+            </p>
+
+          </div>
+
+        </section>
+
+      </div>
+    );
+  }
+
+  // =========================
+  // PAGE PRINCIPALE
+  // =========================
+
+  return (
+    <div className="home-user">
+
+      {/* =========================
+          HEADER
+      ========================= */}
+
+      <header className="user-header">
+
+        <div className="store-logo">
+          Printer Store
+        </div>
+
+        <button
+          className="logout-button"
+          onClick={handleLogout}
+        >
+          🚪 Déconnexion
+        </button>
+
+      </header>
+
+      {/* =========================
+          PRODUITS
+      ========================= */}
+
+      <section
+        id="products"
+        className="products-section"
+      >
+
+        <div className="section-header">
+
+          <h2>
+            🖨️ Nos imprimantes
+          </h2>
+
+          <p>
+            {printers.length} produit
+            {printers.length > 1 ? "s" : ""}{" "}
+            disponible
+            {printers.length > 1 ? "s" : ""}
+          </p>
 
         </div>
 
-        {/* ANIMATION */}
-        {animatingProduct && (
-          <img
-            src={animatingProduct.image}
-            className="fly-image"
-            style={{
-              top: animatingProduct.y,
-              left: animatingProduct.x,
-            }}
-          />
+        {/* =========================
+            AUCUN PRODUIT
+        ========================= */}
+
+        {printers.length === 0 ? (
+
+          <div className="empty-products">
+
+            <div className="empty-icon">
+              📦
+            </div>
+
+            <h3>
+              Aucun produit disponible
+            </h3>
+
+            <p>
+              Aucun produit n'est actuellement
+              disponible dans notre catalogue.
+            </p>
+
+          </div>
+
+        ) : (
+
+          <div className="products-grid">
+
+            {printers.map((printer) => {
+
+              const stock = Number(
+                printer.stock || 0
+              );
+
+              const price = Number(
+                printer.price || 0
+              );
+
+              return (
+
+                <div
+                  className="product-card"
+                  key={printer._id}
+                >
+
+                  {/* =========================
+                      IMAGE
+                  ========================= */}
+
+                  <div className="product-image">
+
+                    {printer.image ? (
+
+                      <img
+                        src={printer.image}
+                        alt={`${printer.brand || ""} ${printer.model || ""}`}
+                        onError={(e) => {
+                          e.currentTarget.style.display = "none";
+                        }}
+                      />
+
+                    ) : (
+
+                      <div className="no-image">
+                        🖨️
+                      </div>
+
+                    )}
+
+                  </div>
+
+                  {/* =========================
+                      INFORMATIONS
+                  ========================= */}
+
+                  <div className="product-info">
+
+                    {printer.brand && (
+                      <p className="brand">
+                        {printer.brand}
+                      </p>
+                    )}
+
+                    <h3>
+                      {printer.model || "Imprimante"}
+                    </h3>
+
+                    {printer.description && (
+                      <p className="description">
+                        {printer.description}
+                      </p>
+                    )}
+
+                    <div className="price">
+                      {price.toFixed(2)} TND
+                    </div>
+
+                    <div
+                      className={
+                        stock > 0
+                          ? "stock available"
+                          : "stock unavailable"
+                      }
+                    >
+                      {stock > 0
+                        ? `✅ ${stock} en stock`
+                        : "❌ Rupture de stock"}
+                    </div>
+
+                    <Link
+                      to={`/printers/${printer._id}`}
+                      className="details-button"
+                    >
+                      Voir le produit
+                    </Link>
+
+                  </div>
+
+                </div>
+
+              );
+            })}
+
+          </div>
+
         )}
 
-      </div>
-    </>
+      </section>
+
+    </div>
   );
 };
 

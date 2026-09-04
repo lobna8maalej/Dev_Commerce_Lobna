@@ -7,10 +7,8 @@ require("dotenv").config();
 // ================= REGISTER =================
 const createAccount = async (req, res) => {
   try {
-
     const { email, username, password } = req.body;
 
-    // VALIDATION
     if (!email || !username || !password) {
       return res.status(400).json({
         message: "All fields are required",
@@ -20,7 +18,6 @@ const createAccount = async (req, res) => {
     const cleanEmail = email.toLowerCase().trim();
     const cleanUsername = username.trim();
 
-    // CHECK EMAIL
     const existingUser = await User.findOne({
       email: cleanEmail,
     });
@@ -31,10 +28,8 @@ const createAccount = async (req, res) => {
       });
     }
 
-    // HASH PASSWORD
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // CREATE USER
     const newUser = await User.create({
       email: cleanEmail,
       username: cleanUsername,
@@ -42,7 +37,7 @@ const createAccount = async (req, res) => {
       role: "user",
     });
 
-    // TOKEN
+    // ================= TOKEN =================
     const token = jwt.sign(
       {
         id: newUser._id,
@@ -50,7 +45,9 @@ const createAccount = async (req, res) => {
         role: newUser.role,
       },
       process.env.JWT_SECRET,
-      { expiresIn: "1h" }
+      {
+        expiresIn: "7d",
+      }
     );
 
     return res.status(201).json({
@@ -64,21 +61,19 @@ const createAccount = async (req, res) => {
     });
 
   } catch (error) {
+    console.error("REGISTER ERROR:", error);
 
     return res.status(500).json({
       message: error.message,
     });
-
   }
 };
 
 // ================= LOGIN =================
 const loginAccount = async (req, res) => {
   try {
-
     const { email, password } = req.body;
 
-    // VALIDATION
     if (!email || !password) {
       return res.status(400).json({
         message: "Email and password required",
@@ -87,7 +82,6 @@ const loginAccount = async (req, res) => {
 
     const cleanEmail = email.toLowerCase().trim();
 
-    // FIND USER
     const user = await User.findOne({
       email: cleanEmail,
     });
@@ -98,7 +92,6 @@ const loginAccount = async (req, res) => {
       });
     }
 
-    // CHECK PASSWORD
     const isPasswordValid = await bcrypt.compare(
       password,
       user.password
@@ -110,7 +103,7 @@ const loginAccount = async (req, res) => {
       });
     }
 
-    // TOKEN
+    // ================= TOKEN =================
     const token = jwt.sign(
       {
         id: user._id,
@@ -118,8 +111,12 @@ const loginAccount = async (req, res) => {
         role: user.role,
       },
       process.env.JWT_SECRET,
-      { expiresIn: "1h" }
+      {
+        expiresIn: "7d",
+      }
     );
+
+    console.log("LOGIN TOKEN CREATED");
 
     return res.status(200).json({
       user: {
@@ -132,11 +129,11 @@ const loginAccount = async (req, res) => {
     });
 
   } catch (error) {
+    console.error("LOGIN ERROR:", error);
 
     return res.status(500).json({
       message: error.message,
     });
-
   }
 };
 

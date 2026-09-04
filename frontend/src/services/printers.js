@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API = "http://localhost:3000/api/printers";
+const API = "http://localhost:5000/api/printers";
 
 // CREATE
 export const createPrinter = async (data) => {

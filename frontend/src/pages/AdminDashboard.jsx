@@ -1,86 +1,269 @@
-import SimpleChart from "../components/charts/SimpleChart";
 import { useEffect, useState } from "react";
 import api from "../services/api";
-import Navbar from "../components/Navbar";
+import "./AdminDashboard.css";
 
 const AdminDashboard = () => {
+
+  // =========================
+  // DONNÉES DASHBOARD
+  // =========================
+
   const [orders, setOrders] = useState([]);
   const [printers, setPrinters] = useState([]);
+
   const [loading, setLoading] = useState(true);
 
+  // =========================
+  // RÉCUPÉRER LES DONNÉES
+  // =========================
+
   useEffect(() => {
+
     const fetchData = async () => {
+
       try {
+
         const [ordersRes, printersRes] = await Promise.all([
           api.get("/orders"),
           api.get("/printers"),
         ]);
 
-        setOrders(ordersRes.data);
-        setPrinters(printersRes.data);
-      } catch (err) {
+        // =========================
+        // DEBUG
+        // =========================
+
         console.log(
-          "ADMIN ERROR:",
+          "ORDERS DASHBOARD:",
+          ordersRes.data
+        );
+
+        console.log(
+          "PRINTERS DASHBOARD:",
+          printersRes.data
+        );
+
+        // =========================
+        // ORDERS
+        // =========================
+
+        setOrders(
+          Array.isArray(ordersRes.data)
+            ? ordersRes.data
+            : ordersRes.data.orders || []
+        );
+
+        // =========================
+        // PRINTERS
+        // =========================
+
+        setPrinters(
+          Array.isArray(printersRes.data)
+            ? printersRes.data
+            : printersRes.data.printers || []
+        );
+
+      } catch (err) {
+
+        console.error(
+          "ADMIN DASHBOARD ERROR:",
           err.response?.data || err.message
         );
+
       } finally {
+
         setLoading(false);
+
       }
+
     };
 
     fetchData();
+
   }, []);
 
-  // 🔥 STATS
-  const totalSales = orders.reduce(
-    (sum, o) => sum + (o.totalPrice || 0),
-    0
-  );
+  // =========================
+  // CALCULS
+  // =========================
+
+  // Nombre total de commandes
 
   const totalOrders = orders.length;
 
+  // Nombre total de produits
+
   const totalProducts = printers.length;
 
+  // Produits avec stock faible
+
   const lowStock = printers.filter(
-    (p) => p.stock < 5
+    (printer) =>
+      Number(printer.stock || 0) <= 10
   ).length;
 
+  // =========================
+  // TOTAL SALES
+  // =========================
+
+  const totalSales = orders.reduce(
+    (sum, order) =>
+      sum + Number(order.totalPrice || 0),
+    0
+  );
+
+  // =========================
+  // LOADING
+  // =========================
+
   if (loading) {
-    return <h2>Loading dashboard...</h2>;
+
+    return (
+      <div className="admin-page">
+
+        <h2>
+          Loading dashboard...
+        </h2>
+
+      </div>
+    );
+
   }
 
+  // =========================
+  // DASHBOARD
+  // =========================
+
   return (
+
     <div className="admin-page">
-      <Navbar />
 
-      <h2>Admin Dashboard</h2>
+      {/* =========================
+          HEADER
+      ========================= */}
 
-      <div className="cards">
-        <div className="card blue">
-          <h3>Total Sales</h3>
-          <p>{totalSales} TND</p>
-        </div>
+      <div className="dashboard-header">
 
-        <div className="card green">
-          <h3>Orders</h3>
-          <p>{totalOrders}</p>
-        </div>
+        <h1>
+          🖨️ Dashboard Overview
+        </h1>
 
-        <div className="card orange">
-          <h3>Products</h3>
-          <p>{totalProducts}</p>
-        </div>
+        <p>
+          Gestion de votre Printer Store
+        </p>
 
-        <div className="card red">
-          <h3>Low Stock</h3>
-          <p>{lowStock}</p>
-        </div>
       </div>
 
-      <h3>Orders Trend</h3>
-      <SimpleChart orders={orders} />
+      {/* =========================
+          STATISTIQUES
+      ========================= */}
+
+      <div className="cards">
+
+        {/* TOTAL SALES */}
+
+        <div className="card blue">
+
+          <h3>
+            💰 Total Sales
+          </h3>
+
+          <p>
+            {totalSales.toFixed(2)} TND
+          </p>
+
+        </div>
+
+        {/* ORDERS */}
+
+        <div className="card green">
+
+          <h3>
+            📦 Orders
+          </h3>
+
+          <p>
+            {totalOrders}
+          </p>
+
+        </div>
+
+        {/* PRODUCTS */}
+
+        <div className="card orange">
+
+          <h3>
+            🖨️ Products
+          </h3>
+
+          <p>
+            {totalProducts}
+          </p>
+
+        </div>
+
+        {/* LOW STOCK */}
+
+        <div className="card red">
+
+          <h3>
+            ⚠️ Low Stock
+          </h3>
+
+          <p>
+            {lowStock}
+          </p>
+
+        </div>
+
+      </div>
+
+      {/* =========================
+          INFORMATIONS
+      ========================= */}
+
+      <div className="dashboard-section">
+
+        <h2>
+          📋 Store Overview
+        </h2>
+
+        <div className="overview-card">
+
+          <p>
+            <strong>
+              Total Orders:
+            </strong>{" "}
+            {totalOrders}
+          </p>
+
+          <p>
+            <strong>
+              Total Products:
+            </strong>{" "}
+            {totalProducts}
+          </p>
+
+          <p>
+            <strong>
+              Low Stock Products:
+            </strong>{" "}
+            {lowStock}
+          </p>
+
+          <p>
+            <strong>
+              Total Sales:
+            </strong>{" "}
+            {totalSales.toFixed(2)} TND
+          </p>
+
+        </div>
+
+      </div>
+
     </div>
+
   );
+
 };
 
 export default AdminDashboard;

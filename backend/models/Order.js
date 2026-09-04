@@ -8,6 +8,24 @@ const orderSchema = new mongoose.Schema(
       required: true,
     },
 
+    // Informations du client pour la livraison
+    customer: {
+      firstName: {
+        type: String,
+        required: true,
+      },
+
+      lastName: {
+        type: String,
+        required: true,
+      },
+
+      phone: {
+        type: String,
+        required: true,
+      },
+    },
+
     items: [
       {
         printer: {
@@ -15,10 +33,12 @@ const orderSchema = new mongoose.Schema(
           ref: "Printer",
           required: true,
         },
+
         quantity: {
           type: Number,
           default: 1,
         },
+
         priceAtPurchase: {
           type: Number,
           required: true,
@@ -36,13 +56,21 @@ const orderSchema = new mongoose.Schema(
       required: true,
     },
 
-    status: {
-      type: String,
-      enum: ["pending", "confirmed", "shipped", "delivered"],
-      default: "pending",
-    },
+    orderStatus: {
+  type: String,
+  enum: [
+    "pending",
+    "processing",
+    "shipped",
+    "delivered",
+    "cancelled"
+  ],
+  default: "pending",
+},
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+  }
 );
 
 module.exports = mongoose.model("Order", orderSchema);

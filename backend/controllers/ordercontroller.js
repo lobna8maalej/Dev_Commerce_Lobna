@@ -4,30 +4,55 @@ const Order = require("../models/Order");
 const createOrder = async (req, res) => {
   try {
     const order = await Order.create({
-   user: req.user.id, 
-   items: req.body.items,
-   totalPrice: req.body.totalPrice,
-   address: req.body.address,
-  });
+      user: req.user.id,
+
+      customer: {
+        firstName: req.body.customer.firstName,
+        lastName: req.body.customer.lastName,
+        phone: req.body.customer.phone,
+      },
+
+      items: req.body.items,
+      totalPrice: req.body.totalPrice,
+      address: req.body.address,
+    });
 
     res.status(201).json(order);
   } catch (error) {
     console.log("ORDER ERROR:", error);
-    res.status(500).json({ message: error.message });
+
+    res.status(500).json({
+      message: error.message,
+    });
   }
 };
 
 // GET USER ORDERS
 const getUserOrders = async (req, res) => {
-  const orders = await Order.find({ userId: req.user.id });
+  const orders = await Order.find({ user: req.user.id });
   res.json(orders);
 };
 
 // GET ALL (ADMIN)
+
 const getOrders = async (req, res) => {
-  const orders = await Order.find();
-  res.json(orders);
+  try {
+    const orders = await Order.find()
+      .populate("user", "username email phone")
+      .sort({ createdAt: -1 });
+
+    console.log("ORDERS WITH USERS:", orders);
+
+    res.status(200).json(orders);
+  } catch (error) {
+    console.error("GET ORDERS ERROR:", error);
+
+    res.status(500).json({
+      message: error.message,
+    });
+  }
 };
+
 
 // GET ONE
 const getOneOrder = async (req, res) => {

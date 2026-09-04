@@ -1,0 +1,221 @@
+/* ==========================================
+   ADMIN LAYOUT
+========================================== */
+
+.admin-layout {
+  display: flex;
+  min-height: 100vh;
+  background: #f5f7fb;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* ==========================================
+   SIDEBAR
+========================================== */
+
+.admin-sidebar {
+  width: 250px;
+  min-height: 100vh;
+
+  background: #111827;
+  color: #ffffff;
+
+  padding: 25px 18px;
+
+  box-sizing: border-box;
+
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+
+  box-shadow: 4px 0 15px rgba(0, 0, 0, 0.08);
+}
+
+/* ==========================================
+   LOGO / TITLE
+========================================== */
+
+.admin-sidebar h2 {
+  margin: 0;
+
+  padding: 10px 12px 30px;
+
+  font-size: 21px;
+  font-weight: 700;
+
+  color: #ffffff;
+
+  text-align: center;
+
+  border-bottom: 1px solid #374151;
+}
+
+/* ==========================================
+   NAVIGATION
+========================================== */
+
+.admin-sidebar nav {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 8px;
+
+  margin-top: 25px;
+}
+
+/* ==========================================
+   LINKS
+========================================== */
+
+.admin-sidebar nav a {
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+
+  padding: 14px 15px;
+
+  border-radius: 9px;
+
+  text-decoration: none;
+
+  color: #d1d5db;
+
+  font-size: 15px;
+
+  font-weight: 500;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+/* ==========================================
+   HOVER
+========================================== */
+
+.admin-sidebar nav a:hover {
+  background: #1f2937;
+
+  color: #ffffff;
+
+  transform: translateX(3px);
+}
+
+/* ==========================================
+   ACTIVE LINK
+========================================== */
+
+.admin-sidebar nav a.active {
+  background: #2563eb;
+
+  color: #ffffff;
+
+  font-weight: 600;
+
+  box-shadow:
+    0 4px 10px rgba(37, 99, 235, 0.3);
+}
+
+/* ==========================================
+   CONTENT
+========================================== */
+
+.admin-content {
+  flex: 1;
+
+  margin-left: 250px;
+
+  min-height: 100vh;
+
+  box-sizing: border-box;
+}
+
+/* ==========================================
+   RESPONSIVE TABLET
+========================================== */
+
+@media (max-width: 900px) {
+
+  .admin-sidebar {
+    width: 210px;
+  }
+
+  .admin-content {
+    margin-left: 210px;
+  }
+
+  .admin-sidebar h2 {
+    font-size: 18px;
+  }
+
+  .admin-sidebar nav a {
+    font-size: 14px;
+
+    padding: 12px;
+  }
+
+}
+
+/* ==========================================
+   RESPONSIVE MOBILE
+========================================== */
+
+@media (max-width: 600px) {
+
+  .admin-sidebar {
+    width: 70px;
+
+    padding: 20px 10px;
+  }
+
+  .admin-sidebar h2 {
+    font-size: 0;
+
+    padding: 10px 0 25px;
+
+    border-bottom: 1px solid #374151;
+  }
+
+  .admin-sidebar h2::before {
+    content: "🖨️";
+
+    font-size: 25px;
+  }
+
+  .admin-sidebar nav {
+    margin-top: 20px;
+  }
+
+  .admin-sidebar nav a {
+    justify-content: center;
+
+    padding: 14px 8px;
+
+    font-size: 0;
+
+    gap: 0;
+  }
+
+  .admin-sidebar nav a:hover {
+    transform: none;
+  }
+
+  /*
+     On garde les emojis visibles
+     même lorsque le texte est caché.
+  */
+
+  .admin-sidebar nav a {
+    line-height: 1;
+  }
+
+  .admin-content {
+    margin-left: 70px;
+  }
+
+}

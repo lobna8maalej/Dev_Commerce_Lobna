@@ -1,6 +1,7 @@
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../services/api";
 import "./auth.css";
 
 const Auth = () => {
@@ -12,67 +13,169 @@ const Auth = () => {
 
   const navigate = useNavigate();
 
-  const handleAuth = async (e) => {
+  // =========================
+  // LOGIN
+  // =========================
+  const handleLogin = async (e) => {
     e.preventDefault();
 
     try {
-      const url = isLogin
-        ? "http://localhost:3000/api/auth/login"
-        : "http://localhost:3000/api/auth/register";
+      const res = await api.post("/auth/login", {
+        email,
+        password,
+      });
 
-      const body = isLogin
-        ? { email, password }
-        : { username, email, password };
+      const { token, user } = res.data;
 
-      const res = await axios.post(url, body);
+      // Sauvegarder le token et l'utilisateur
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify(user));
 
-      localStorage.setItem("token", res.data.token);
-      localStorage.setItem("user", JSON.stringify(res.data.user));
+      console.log("LOGIN USER:", user);
 
-      navigate(res.data.user.role === "admin" ? "/admin" : "/home");
+      // =========================
+      // REDIRECTION SELON LE ROLE
+      // =========================
+
+      if (user.role === "admin") {
+        navigate("/admin");
+      } else {
+        navigate("/HomeUser");
+      }
+
     } catch (err) {
-      alert(err.response?.data?.message || "Auth failed");
+      console.error(
+        "LOGIN ERROR:",
+        err.response?.data || err.message
+      );
+
+      alert(
+        err.response?.data?.message ||
+        "Login failed"
+      );
+    }
+  };
+
+  // =========================
+  // REGISTER
+  // =========================
+  const handleRegister = async (e) => {
+    e.preventDefault();
+
+    try {
+      const res = await api.post("/auth/register", {
+        username,
+        email,
+        password,
+      });
+
+      const { token, user } = res.data;
+
+      // Sauvegarder le token et l'utilisateur
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify(user));
+
+      console.log("REGISTER USER:", user);
+
+      // Après inscription
+      // un utilisateur normal va vers /home
+      if (user.role === "admin") {
+        navigate("/admin");
+      } else {
+        navigate("/HomeUser");
+      }
+
+    } catch (err) {
+      console.error(
+        "REGISTER ERROR:",
+        err.response?.data || err.message
+      );
+
+      alert(
+        err.response?.data?.message ||
+        "Registration failed"
+      );
+    }
+  };
+
+  // =========================
+  // FORM SUBMIT
+  // =========================
+  const handleAuth = (e) => {
+    if (isLogin) {
+      handleLogin(e);
+    } else {
+      handleRegister(e);
     }
   };
 
   return (
-    <div className={`auth-wrapper ${isLogin ? "login" : "register"}`}>
+    <div
+      className={`auth-wrapper ${
+        isLogin ? "login" : "register"
+      }`}
+    >
 
       {/* LEFT PANEL */}
       <div className="auth-left">
-        <h1>Welcome 👋</h1>
-        <p>Start your journey with us</p>
 
-        <button onClick={() => setIsLogin(!isLogin)}>
-          {isLogin ? "Create account" : "Back to login"}
+        <h1>Welcome 👋</h1>
+
+        <p>
+          Start your journey with us
+        </p>
+
+        <button
+          onClick={() => setIsLogin(!isLogin)}
+        >
+          {isLogin
+            ? "Create account"
+            : "Back to login"}
         </button>
+
       </div>
 
-      {/* RIGHT PANEL (FORM) */}
+      {/* RIGHT PANEL */}
       <div className="auth-right">
 
         <div className="glass-card">
 
-          <h2>{isLogin ? "Login" : "Register"}</h2>
+          <h2>
+            {isLogin ? "Login" : "Register"}
+          </h2>
 
           <form onSubmit={handleAuth}>
 
             {!isLogin && (
               <input
+                type="text"
                 placeholder="Username"
-                onChange={(e) => setUsername(e.target.value)}
+                value={username}
+                onChange={(e) =>
+                  setUsername(e.target.value)
+                }
+                required
               />
             )}
 
             <input
+              type="email"
               placeholder="Email"
-              onChange={(e) => setEmail(e.target.value)}
+              value={email}
+              onChange={(e) =>
+                setEmail(e.target.value)
+              }
+              required
             />
 
             <input
               type="password"
               placeholder="Password"
-              onChange={(e) => setPassword(e.target.value)}
+              value={password}
+              onChange={(e) =>
+                setPassword(e.target.value)
+              }
+              required
             />
 
             <button type="submit">
@@ -84,8 +187,10 @@ const Auth = () => {
         </div>
 
       </div>
+
     </div>
   );
 };
 
 export default Auth;
+

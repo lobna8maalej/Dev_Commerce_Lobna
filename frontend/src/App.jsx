@@ -1,35 +1,78 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate
+} from "react-router-dom";
 
-// USER PAGES
+// =========================
+// USER
+// =========================
 import HomeUser from "./pages/HomeUser";
 import Cart from "./pages/Cart";
 import Delivery from "./pages/Delivery";
 import PrinterDetails from "./pages/PrinterDetails";
 
+// =========================
 // AUTH
+// =========================
 import Auth from "./pages/Auth";
 
+// =========================
 // ADMIN
+// =========================
 import AdminDashboard from "./pages/AdminDashboard";
+import AdminOrders from "./pages/AdminOrders";
+import AdminProducts from "./pages/adminProducts";
+import AdminStock from "./pages/adminStock";
+import AdminSales from "./pages/AdminSales";
+import AdminSettings from "./pages/AdminSettings";
+import AdminLayout from "./components/AdminLayout";
 
+// =========================
 // PROTECTION
-import PrivateRoute from "./pages/PrivateRoute";
+// =========================
+import PrivateRoute from "./components/PrivateRoute";
 
+// =========================
 // FOOTER
+// =========================
 import Footer from "./components/Footer";
+
 
 function App() {
   return (
     <Router>
+
       <Routes>
 
-        {/* REDIRECTION PAR DÉFAUT */}
-        <Route path="/" element={<Navigate to="/auth" />} />
+        {/* =========================
+            ACCUEIL
+        ========================= */}
 
-        {/* AUTH */}
-        <Route path="/auth" element={<Auth />} />
+        <Route
+          path="/"
+          element={
+            <>
+              <HomeUser />
+              <Footer />
+            </>
+          }
+        />
 
-        {/* USER HOME */}
+        {/* =========================
+            AUTHENTIFICATION
+        ========================= */}
+
+        <Route
+          path="/auth"
+          element={<Auth />}
+        />
+
+        {/* =========================
+            USER CONNECTÉ
+        ========================= */}
+
         <Route
           path="/home"
           element={
@@ -42,7 +85,6 @@ function App() {
           }
         />
 
-        {/* CART */}
         <Route
           path="/cart"
           element={
@@ -55,7 +97,6 @@ function App() {
           }
         />
 
-        {/* DELIVERY */}
         <Route
           path="/delivery"
           element={
@@ -68,30 +109,87 @@ function App() {
           }
         />
 
-        {/* PRINTER DETAILS */}
+        {/* =========================
+            DÉTAIL PRODUIT
+        ========================= */}
+
         <Route
           path="/printers/:id"
           element={
-            <PrivateRoute>
-              <>
-                <PrinterDetails />
-                <Footer />
-              </>
-            </PrivateRoute>
+            <>
+              <PrinterDetails />
+              <Footer />
+            </>
           }
         />
 
-        {/* ADMIN */}
+        {/* =========================
+            ADMIN
+        ========================= */}
+
         <Route
           path="/admin"
           element={
             <PrivateRoute role="admin">
-              <AdminDashboard />
+              <AdminLayout />
             </PrivateRoute>
+          }
+        >
+
+          {/* Dashboard */}
+          <Route
+            index
+            element={<AdminDashboard />}
+          />
+
+          {/* Orders */}
+          <Route
+            path="orders"
+            element={<AdminOrders />}
+          />
+
+          {/* Products */}
+          <Route
+            path="products"
+            element={<AdminProducts />}
+          />
+
+          {/* Stock */}
+          <Route
+            path="stock"
+            element={<AdminStock />}
+          />
+
+          {/* Sales */}
+          <Route
+            path="sales"
+            element={<AdminSales />}
+          />
+
+          {/* Settings */}
+          <Route
+            path="settings"
+            element={<AdminSettings />}
+          />
+
+        </Route>
+
+        {/* =========================
+            FALLBACK
+        ========================= */}
+
+        <Route
+          path="*"
+          element={
+            <Navigate
+              to="/"
+              replace
+            />
           }
         />
 
       </Routes>
+
     </Router>
   );
 }

@@ -5,34 +5,45 @@ const Navbar = () => {
   const [cartCount, setCartCount] = useState(0);
   const navigate = useNavigate();
 
-  // ================= UPDATE CART COUNT =================
   const updateCount = () => {
-    const cart = JSON.parse(localStorage.getItem("cart")) || [];
+    try {
+      const cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-    const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+      const count = cart.reduce(
+        (sum, item) => sum + Number(item.quantity || 0),
+        0
+      );
 
-    setCartCount(count);
+      setCartCount(count);
+    } catch (error) {
+      console.error("CART COUNT ERROR:", error);
+      setCartCount(0);
+    }
   };
 
   useEffect(() => {
     updateCount();
-    const interval = setInterval(updateCount, 500);
-    return () => clearInterval(interval);
+
+    window.addEventListener("cartUpdated", updateCount);
+
+    return () => {
+      window.removeEventListener("cartUpdated", updateCount);
+    };
   }, []);
 
-  // ================= LOGOUT =================
- const handleLogout = () => {
-  localStorage.removeItem("token");
-  localStorage.removeItem("user");
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    localStorage.removeItem("cart");
 
-  navigate("/auth"); 
-};
+    navigate("/auth");
+  };
 
   return (
     <nav
       style={{
         display: "flex",
-        justifyContent: "flex-end",
+        justifyContent: "space-between",
         alignItems: "center",
         padding: "15px 30px",
         background: "#111",
@@ -42,23 +53,48 @@ const Navbar = () => {
         zIndex: 999,
       }}
     >
+      {/* LOGO */}
+      <Link
+        to="/"
+        style={{
+          color: "white",
+          textDecoration: "none",
+          fontSize: "20px",
+          fontWeight: "bold",
+        }}
+      >
+        🖨️ Printer Store
+      </Link>
+
+      {/* MENU */}
       <div
         style={{
           display: "flex",
-          gap: "20px",
+          gap: "25px",
           alignItems: "center",
         }}
       >
-        
+        <Link
+          to="/"
+          style={{
+            color: "white",
+            textDecoration: "none",
+            fontWeight: "500",
+          }}
+        >
+          Home
+        </Link>
+
         <Link
           to="/cart"
           style={{
             color: "white",
             textDecoration: "none",
             position: "relative",
+            fontWeight: "500",
           }}
         >
-           Cart
+          🛒 Cart
 
           {cartCount > 0 && (
             <span
@@ -69,7 +105,12 @@ const Navbar = () => {
                 background: "red",
                 color: "white",
                 borderRadius: "50%",
-                padding: "2px 7px",
+                minWidth: "20px",
+                height: "20px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: "2px",
                 fontSize: "12px",
                 fontWeight: "bold",
               }}
@@ -79,16 +120,17 @@ const Navbar = () => {
           )}
         </Link>
 
-        {/* LOGOUT */}
         <button
+          type="button"
           onClick={handleLogout}
           style={{
             background: "red",
             color: "white",
             border: "none",
-            padding: "8px 12px",
+            padding: "8px 14px",
             borderRadius: "5px",
             cursor: "pointer",
+            fontWeight: "600",
           }}
         >
           Logout
@@ -99,3 +141,4 @@ const Navbar = () => {
 };
 
 export default Navbar;
+

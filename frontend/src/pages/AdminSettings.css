@@ -1,0 +1,259 @@
+/* ==========================================
+   ADMIN SETTINGS
+========================================== */
+
+.admin-page {
+  min-height: 100vh;
+  padding: 35px;
+  background: #f5f7fb;
+  font-family: Arial, Helvetica, sans-serif;
+  box-sizing: border-box;
+}
+
+/* ==========================================
+   HEADER
+========================================== */
+
+.page-header {
+  margin-bottom: 30px;
+}
+
+.page-header h1 {
+  margin: 0 0 8px;
+  font-size: 30px;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.page-header p {
+  margin: 0;
+  color: #6b7280;
+  font-size: 15px;
+}
+
+/* ==========================================
+   SETTINGS CONTAINER
+========================================== */
+
+.settings-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 22px;
+}
+
+/* ==========================================
+   SETTINGS CARD
+========================================== */
+
+.settings-card {
+  background: #ffffff;
+  padding: 25px;
+  border-radius: 14px;
+
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
+
+  border: 1px solid #e5e7eb;
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.settings-card:hover {
+  transform: translateY(-3px);
+
+  box-shadow:
+    0 8px 22px rgba(0, 0, 0, 0.1);
+}
+
+/* ==========================================
+   CARD TITLE
+========================================== */
+
+.settings-card h2 {
+  margin: 0 0 22px;
+
+  padding-bottom: 15px;
+
+  font-size: 20px;
+
+  color: #1f2937;
+
+  border-bottom: 1px solid #e5e7eb;
+}
+
+/* ==========================================
+   INFORMATION
+========================================== */
+
+.settings-card p {
+  margin: 13px 0;
+
+  font-size: 15px;
+
+  line-height: 1.6;
+
+  color: #6b7280;
+}
+
+.settings-card p strong {
+  display: inline-block;
+
+  min-width: 170px;
+
+  color: #374151;
+
+  font-weight: 600;
+}
+
+/* ==========================================
+   PAYMENT
+========================================== */
+
+.settings-card:nth-child(3) {
+  border-left: 5px solid #16a34a;
+}
+
+.settings-card:nth-child(3) p:last-child {
+  margin-top: 20px;
+
+  padding: 12px 15px;
+
+  background: #f0fdf4;
+
+  border-radius: 8px;
+
+  color: #15803d;
+
+  font-weight: 500;
+}
+
+/* ==========================================
+   DELIVERY
+========================================== */
+
+.settings-card:nth-child(2) {
+  border-left: 5px solid #2563eb;
+}
+
+/* ==========================================
+   STORE INFORMATION
+========================================== */
+
+.settings-card:nth-child(1) {
+  border-left: 5px solid #7c3aed;
+}
+
+/* ==========================================
+   NOTIFICATIONS
+========================================== */
+
+.settings-card:nth-child(4) {
+  border-left: 5px solid #f59e0b;
+}
+
+.settings-card:nth-child(4) p {
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  padding: 10px 12px;
+
+  margin: 8px 0;
+
+  background: #f8fafc;
+
+  border-radius: 8px;
+}
+
+.settings-card:nth-child(4) p strong {
+  min-width: auto;
+}
+
+/* ==========================================
+   LOADING
+========================================== */
+
+.admin-page > h2 {
+  color: #374151;
+
+  font-size: 22px;
+}
+
+/* ==========================================
+   EMPTY STATE
+========================================== */
+
+.admin-page > p {
+  padding: 25px;
+
+  background: #ffffff;
+
+  border-radius: 12px;
+
+  color: #6b7280;
+
+  text-align: center;
+
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+/* ==========================================
+   RESPONSIVE TABLET
+========================================== */
+
+@media (max-width: 900px) {
+
+  .admin-page {
+    padding: 25px;
+  }
+
+  .settings-container {
+    grid-template-columns: 1fr;
+  }
+
+}
+
+/* ==========================================
+   RESPONSIVE MOBILE
+========================================== */
+
+@media (max-width: 600px) {
+
+  .admin-page {
+    padding: 18px;
+  }
+
+  .page-header h1 {
+    font-size: 24px;
+  }
+
+  .page-header p {
+    font-size: 14px;
+  }
+
+  .settings-card {
+    padding: 20px;
+  }
+
+  .settings-card h2 {
+    font-size: 18px;
+  }
+
+  .settings-card p {
+    font-size: 14px;
+  }
+
+  .settings-card p strong {
+    min-width: 130px;
+  }
+
+  .settings-card:nth-child(4) p {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+  }
+
+}
