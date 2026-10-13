@@ -10,7 +10,12 @@ const AdminSettings = () => {
   useEffect(() => {
     const fetchSettings = async () => {
       try {
-        const response = await api.get("/settings");
+        const token=localStorage.getItem("token")
+        const response = await api.get("/settings",{
+          headers:{
+            Authorization:`Bearer ${token}`
+          }
+        });
 
         console.log("SETTINGS:", response.data);
 

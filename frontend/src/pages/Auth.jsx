@@ -40,7 +40,7 @@ const Auth = () => {
       if (user.role === "admin") {
         navigate("/admin");
       } else {
-        navigate("/HomeUser");
+        navigate("/Home");
       }
 
     } catch (err) {
@@ -82,7 +82,7 @@ const Auth = () => {
       if (user.role === "admin") {
         navigate("/admin");
       } else {
-        navigate("/HomeUser");
+        navigate("/home");
       }
 
     } catch (err) {

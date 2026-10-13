@@ -13,24 +13,26 @@ const AdminDashboard = () => {
 
   const [loading, setLoading] = useState(true);
 
-  // =========================
-  // RÉCUPÉRER LES DONNÉES
-  // =========================
+
 
   useEffect(() => {
 
     const fetchData = async () => {
 
       try {
-
+        const token=localStorage.getItem("token")
         const [ordersRes, printersRes] = await Promise.all([
-          api.get("/orders"),
-          api.get("/printers"),
+          api.get("/orders",{
+            headers:{
+              Authorization:`Bearer ${token}`
+            }
+          }),
+          api.get("/printers",{
+            headers:{
+              Authorization:`Bearer ${token}`
+            }
+          }),
         ]);
-
-        // =========================
-        // DEBUG
-        // =========================
 
         console.log(
           "ORDERS DASHBOARD:",

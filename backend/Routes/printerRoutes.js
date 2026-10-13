@@ -15,7 +15,7 @@ const { auth, isAdmin } = require("../middleware/auth");
 // ================= PUBLIC =================
 
 // User + Admin peuvent voir les imprimantes
-router.get("/", getPrinters);
+router.get("/",auth,isAdmin, getPrinters);
 
 // User + Admin peuvent voir le détail
 router.get("/:id", getPrinterById);

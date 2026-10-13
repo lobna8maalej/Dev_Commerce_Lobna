@@ -7,12 +7,17 @@ const AdminOrders = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // =========================
-  // RÉCUPÉRER LES COMMANDES
-  // =========================
+ 
+
+
   const fetchOrders = async () => {
     try {
-      const res = await api.get("/orders");
+      const token=localStorage.getItem("token")
+      const res = await api.get("/orders",{
+        headers:{
+          Authorization:`Bearer ${token}`
+        }
+      });
 
       console.log("ORDERS ADMIN:", res.data);
 

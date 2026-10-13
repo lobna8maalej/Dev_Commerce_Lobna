@@ -9,7 +9,12 @@ const AdminStock = () => {
   useEffect(() => {
     const fetchPrinters = async () => {
       try {
-        const res = await api.get("/printers");
+        const token=localStorage.getItem("token")
+        const res = await api.get("/printers",{
+          headers:{
+            Authorization:`Bearer ${token}`
+          }
+        });
 
         setPrinters(res.data);
       } catch (err) {

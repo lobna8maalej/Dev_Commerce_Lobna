@@ -24,7 +24,7 @@ app.use(express.json());
 // ROUTES
 // =========================
 
-const orderRoutes = require("./routes/orderRoutes");
+const OrderRoutes = require("./Routes/OrderRoutes");
 const userRoutes = require("./routes/userRoutes");
 const printerRoutes = require("./routes/printerRoutes");
 const salesRoutes = require("./Routes/salesRoutes");
@@ -34,7 +34,7 @@ const settingsRoutes = require("./Routes/settingsRoutes");
 // API
 // =========================
 
-app.use("/api/orders", orderRoutes);
+app.use("/api/orders", OrderRoutes);
 app.use("/api/auth", userRoutes);
 app.use("/api/printers", printerRoutes);
 app.use("/api/sales", salesRoutes);

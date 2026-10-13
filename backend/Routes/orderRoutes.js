@@ -10,15 +10,15 @@ const {
   deleteOrder
 } = require("../controllers/orderController");
 
-const { auth } = require("../middleware/auth");
+const { auth, isAdmin } = require("../middleware/auth");
 
 // USER
 router.post("/", auth, createOrder);
 router.get("/my-orders", auth, getUserOrders);
 
 // ADMIN
-router.get("/", auth, getOrders);
-router.get("/:id", auth, getOneOrder);
+router.get("/", auth,isAdmin, getOrders);
+router.get("/:id", auth,isAdmin, getOneOrder);
 router.put("/:id", auth, updateOrder);
 router.delete("/:id", auth, deleteOrder);
 
